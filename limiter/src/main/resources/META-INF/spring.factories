@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+me.fmeng.limiter.configure.LimiterAutoConfiguration,\
+me.fmeng.limiter.configure.LimiterMvcAutoConfiguration
