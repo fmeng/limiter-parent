@@ -28,12 +28,6 @@ public class TicketController {
         return ImmutableMap.of("正常请求", "list正常请求");
     }
 
-    @GetMapping("/remainderInfo")
-    public Object remainderInfo(String userId, String trainNum) {
-        ticketService.guavaRemainderInfo();
-        return ImmutableMap.of("正常请求", "remainderInfo正常请求");
-    }
-
     @GetMapping("/redisList")
     public Object redisList(String userId, String startCity, String endCity) {
         ticketService.redisList();

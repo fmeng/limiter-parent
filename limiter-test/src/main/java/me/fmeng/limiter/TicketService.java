@@ -19,19 +19,9 @@ public class TicketService {
         return ImmutableMap.of("currentTimeMillis", currentTimeMillis);
     }
 
-    public Object guavaRemainderInfo() {
-        long currentTimeMillis = System.currentTimeMillis();
-        return ImmutableMap.of("currentTimeMillis", currentTimeMillis);
-    }
-
     @Limiter("redis-10")
     public Object redisList() {
         log.info("测试时间{}", System.currentTimeMillis());
         return ImmutableMap.of("currentTimeMillis", System.currentTimeMillis());
-    }
-
-    public Object redisRemainderInfo() {
-        long currentTimeMillis = System.currentTimeMillis();
-        return ImmutableMap.of("currentTimeMillis", currentTimeMillis);
     }
 }
