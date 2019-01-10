@@ -1,0 +1,79 @@
+# Spring配置
+spring:
+  application:
+    name: alpha-limit-local
+#tomcat设置
+server:
+  port: 9096
+  tomcat:
+    max-threads: 2000
+    min-spare-threads: 100
+    max-connections: 10000
+    accept-count: 100
+  servlet:
+    context-path: /limiter
+limiter:
+  enable: true
+  appId: "${spring.application.name}"
+  allLimiterTimeoutMilliseconds: 60000
+  redisson:
+    singleServerConfig:
+      address: "redis://127.0.0.1:6379"
+      password: fmeng123
+  items:
+  - name: guava-10
+    enable: false
+    limiter-factory-class: me.fmeng.limiter.infrastructure.factory.GuavaLimiterFactory
+    limiterStrategyType: ANNOTATION
+    permits: 10
+    rateInterval: 1
+    timeUnit: SECONDS
+    exceptionMessage: "guava-10被限流"
+    customHitterClass: me.fmeng.limiter.infrastructure.hitter.HitterAutoDelegate
+    enableLocalLimiterCache: true
+  - name: guava-20
+    enable: false
+    limiter-factory-class: me.fmeng.limiter.CustomLimiterFactory
+    limiterStrategyType: URL
+    permits: 0
+    rateInterval: 1
+    timeUnit: SECONDS
+    exceptionMessage: "guava-20被限流"
+    customHitterClass: me.fmeng.limiter.infrastructure.hitter.HitterAutoDelegate
+    enableLocalLimiterCache: false
+    resource:
+      requestMethods: [GET, POST]
+      pathRegex: ".*/ticket/guavaList.*"
+      reverse: true
+      params:
+      - paramName: "userId"
+        dynamic: false
+        paramValues: ["user111", "user222"]
+  - name: redis-10
+    enable: true
+    limiter-factory-class: me.fmeng.limiter.infrastructure.factory.RedisLimiterFactory
+    limiterStrategyType: ANNOTATION
+    permits: 20
+    rateInterval: 1
+    timeUnit: SECONDS
+    exceptionMessage: "redis-10被限流"
+    customHitterClass: me.fmeng.limiter.infrastructure.hitter.HitterAutoDelegate
+    enableLocalLimiterCache: true
+  - name: redis-20
+    enable: false
+    limiter-factory-class: me.fmeng.limiter.infrastructure.factory.RedisLimiterFactory
+    limiterStrategyType: URL
+    permits: 0
+    rateInterval: 1
+    timeUnit: SECONDS
+    exceptionMessage: "redis-20被限流"
+    customHitterClass: me.fmeng.limiter.infrastructure.hitter.HitterAutoDelegate
+    enableLocalLimiterCache: false
+    resource:
+      requestMethods: [GET, POST]
+      pathRegex: ".*/ticket/guavaList.*"
+      reverse: true
+      params:
+      - paramName: "userId"
+        dynamic: false
+        paramValues: ["user111", "user222"]
