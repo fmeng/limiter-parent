@@ -12,7 +12,7 @@
 
     <groupId>me.fmeng</groupId>
     <artifactId>limiter-parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>pom</packaging>
     <name>limiter-parent</name>
 
@@ -51,7 +51,7 @@
 
     <properties>
         <!--应用全局版本控制-->
-        <limiter-parent.version>1.0.0-SNAPSHOT</limiter-parent.version>
+        <limiter-parent.version>1.0.0</limiter-parent.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
