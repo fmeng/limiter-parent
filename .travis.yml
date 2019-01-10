@@ -6,4 +6,4 @@ services:
 before_install:
 - docker pull redis:3.2.9
 - docker run --name fmeng-redis -p 6379:6379 -d redis:3.2.9 redis-server --appendonly yes --requirepass "fmeng123"
-script: mvn -B -DjacocoReports=jetcache-test/target/site/jacoco-aggregate/jacoco.xml clean test jacoco:report-aggregate coveralls:report
+script: mvn -B -DjacocoReports=jetcache-test/target/site/jacoco-aggregate/jacoco.xml -Dgpg.skip -Dmaven.test.skip=true clean test jacoco:report-aggregate coveralls:report
