@@ -34,12 +34,12 @@ public abstract class AbstractTest {
     /**
      * 并发数
      */
-    private static final int REQUEST_MAX_TIMES = 20;
+    private static final int REQUEST_MAX_TIMES = 10;
 
     /**
      * 主线程等待时间
      */
-    private static final int MAIN_THREAD_WAIT_MS = 10 * 1000;
+    private static final int MAIN_THREAD_WAIT_MS = 3 * 1000;
 
     /**
      * 并行调用模版方法
