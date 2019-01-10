@@ -3,13 +3,11 @@ package me.fmeng.limiter.configure.bean;
 import com.google.common.base.Preconditions;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import me.fmeng.limiter.constant.LimiterConstant;
 import me.fmeng.limiter.constant.LimiterStrategyTypeEnum;
 import me.fmeng.limiter.util.JsonUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.client.codec.Codec;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -26,7 +24,6 @@ import java.util.Objects;
  */
 @Data
 @Slf4j
-@ConfigurationProperties(prefix = LimiterConstant.LIMITER_KEY_PREFIX)
 public class LimiterProperties {
 
     /**

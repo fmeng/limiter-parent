@@ -1,15 +1,14 @@
 package me.fmeng.limiter.infrastructure.factory;
 
-import com.google.common.base.Throwables;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import lombok.extern.slf4j.Slf4j;
 import me.fmeng.limiter.Limiter;
 import me.fmeng.limiter.configure.bean.LimiterItemProperties;
 import me.fmeng.limiter.infrastructure.LimiterFactory;
-import me.fmeng.limiter.infrastructure.limiter.AlwaysPassLimiter;
 
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 提供缓存支持的限流器工厂
@@ -23,7 +22,11 @@ public abstract class BaseCachedLimiterFactory implements LimiterFactory {
     /**
      * 根据hitKey缓存限流器<hitKey, 实现的限流器>
      */
-    private final Cache<String, Limiter> hitKeyLimiterCache = CacheBuilder.newBuilder().initialCapacity(3).concurrencyLevel(5).build();
+    private final Cache<String, Limiter> hitKeyLimiterCache = CacheBuilder.newBuilder()
+            .initialCapacity(100)
+            .concurrencyLevel(5)
+            .expireAfterWrite(1, TimeUnit.HOURS)
+            .build();
 
     /**
      * 创建或者共缓存中查找限流器
@@ -42,13 +45,9 @@ public abstract class BaseCachedLimiterFactory implements LimiterFactory {
         try {
             return hitKeyLimiterCache.get(hitKey, () -> this.doCreate(hitKey, item));
         } catch (ExecutionException e) {
-            Throwable cause = e.getCause();
-            // 创建Guava限流器失败
-            log.error("创建限流器失败, hitKey={}, item={}", e);
-            // 抛出运行时异常
-            Throwables.propagateIfPossible(cause);
-            // 没有检查异常，不影响业务直接返回
-            return AlwaysPassLimiter.singleton();
+            // 创建限流器失败
+            log.error("创建限流器失败, hitKey={}, item={}", hitKey, item, e);
+            throw new RuntimeException("创建限流器失败", e);
         }
     }
 

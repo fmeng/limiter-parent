@@ -21,6 +21,9 @@ public class JsonUtils {
      * 例如:日志打印
      */
     public static String objectToJsonQuietly(Object o) {
+        if (o == null) {
+            return "";
+        }
         try {
             return MAPPER.writeValueAsString(o);
         } catch (JsonProcessingException e) {

@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 被限流的资源
@@ -17,7 +16,7 @@ import java.util.Map;
  * @since 2018/07/24
  */
 @Data
-@ConfigurationProperties(prefix = LimiterConstant.LIMITER_KEY_PREFIX + ".item" + ".resource")
+@ConfigurationProperties(prefix = LimiterConstant.LIMITER_KEY_PREFIX + ".items" + ".resource")
 public class LimiterResourceProperties {
 
     /**
@@ -38,7 +37,30 @@ public class LimiterResourceProperties {
     private Boolean reverse = Boolean.FALSE;
 
     /**
-     * 其他的业务参数包装到map中
+     * 请求参数
      */
-    private Map<String, List<String>> paramResources;
+    private List<ParamProperties> params;
+
+    /**
+     * 请求参数
+     */
+    @Data
+    @ConfigurationProperties(prefix = LimiterConstant.LIMITER_KEY_PREFIX + ".items" + ".resource" + ".params")
+    public static class ParamProperties {
+        /**
+         * true:根据请求参数动态生成
+         */
+        private Boolean dynamic = Boolean.FALSE;
+
+        /**
+         * 请求参数的名字
+         */
+        @NotBlank
+        private String paramName;
+
+        /**
+         * 请求参数的值
+         */
+        private List<String> paramValues;
+    }
 }

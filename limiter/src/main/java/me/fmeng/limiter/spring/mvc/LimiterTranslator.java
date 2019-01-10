@@ -6,6 +6,7 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import me.fmeng.limiter.constant.LimiterConstant;
 import me.fmeng.limiter.exception.LimiterException;
+import me.fmeng.limiter.exception.RequestParamException;
 import me.fmeng.limiter.infrastructure.hitter.ResourceBO;
 import me.fmeng.limiter.infrastructure.hitter.ResourceBoHolder;
 import me.fmeng.limiter.util.JsonUtils;
@@ -38,7 +39,20 @@ public class LimiterTranslator {
     @ResponseBody
     public Object limiterException(LimiterException e) {
         printLog(e, ResourceBoHolder.get());
-        return new LimiterResult(e.getExceptionMessage());
+        return new LimiterResult(e.getNoticeMessage());
+    }
+
+    /**
+     * 参数请求,自动转换成前端视图
+     *
+     * @param e 参数请求异常
+     * @return 前端视图
+     */
+    @ExceptionHandler(RequestParamException.class)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public Object requestParamException(RequestParamException e) {
+        return new LimiterResult(e.getNoticeMessage());
     }
 
     /**
@@ -48,8 +62,8 @@ public class LimiterTranslator {
      * @param resourceBO 被限制的资源
      */
     protected void printLog(LimiterException e, ResourceBO resourceBO) {
-        log.warn("触发限流策略,限流生效,记录用户请求信息, exceptionMessage={}, requestUrl={}, requestMethod={}, parameterMap={}, annotationLimiterNames={}"
-                , e.getExceptionMessage()
+        log.warn("触发限流策略,限流生效,记录用户请求信息, noticeMessage={}, requestUrl={}, requestMethod={}, parameterMap={}, annotationLimiterNames={}"
+                , e.getNoticeMessage()
                 , resourceBO.getRequestUrl()
                 , resourceBO.getRequestMethod()
                 , JsonUtils.objectToJsonQuietly(resourceBO.getParameterMap())

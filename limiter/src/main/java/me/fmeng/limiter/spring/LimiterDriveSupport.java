@@ -9,7 +9,7 @@ import me.fmeng.limiter.configure.bean.LimiterProperties;
 import me.fmeng.limiter.exception.LimiterException;
 import me.fmeng.limiter.infrastructure.LimiterFactory;
 import me.fmeng.limiter.infrastructure.hitter.ResourceBO;
-import me.fmeng.limiter.util.KeyGenerator;
+import me.fmeng.limiter.util.HitKeyUtils;
 import org.springframework.beans.factory.InitializingBean;
 
 import javax.annotation.Resource;
@@ -62,7 +62,7 @@ public class LimiterDriveSupport implements InitializingBean {
             }
             boolean hit = hitter.hit(resourceBO, item);
             if (hit) {
-                String hitKey = KeyGenerator.generate(limiterProperties.getAppId(), resourceBO, item);
+                String hitKey = HitKeyUtils.generateKey(limiterProperties.getAppId(), resourceBO, item);
                 Limiter limiter = limiterFactoryRouter.create(hitKey, item);
                 // tryToPass 会抛出限流异常或业务异常
                 long passMilliseconds = limiter.tryToPass();
@@ -70,10 +70,14 @@ public class LimiterDriveSupport implements InitializingBean {
                 handledLimiterMillisecondsTemp += passMilliseconds;
                 if (handledLimiterMillisecondsTemp > limiterProperties.getAllLimiterTimeoutMilliseconds()) {
                     if (log.isDebugEnabled()) {
-                        log.debug("全局限流生效, resourceBO={}， passMilliseconds={}, limiterPassMilliseconds={}"
-                                , resourceBO, handledLimiterMillisecondsTemp, limiterProperties.getAllLimiterTimeoutMilliseconds());
+                        log.debug("全局限流生效, resourceBO={}， nowMilliseconds={}, passMilliseconds={}, limiterPassMilliseconds={}"
+                                , resourceBO, System.currentTimeMillis(), handledLimiterMillisecondsTemp, limiterProperties.getAllLimiterTimeoutMilliseconds());
                     }
                     throw new LimiterException(limiterProperties.getExceptionMessage());
+                }
+                if (log.isDebugEnabled()) {
+                    log.debug("通过限流器hitKey={}, nowMilliseconds={}, passMilliseconds={}, resourceBO={}"
+                            , hitKey, System.currentTimeMillis(), passMilliseconds, resourceBO);
                 }
             }
         }

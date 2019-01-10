@@ -7,6 +7,7 @@ import me.fmeng.limiter.configure.bean.LimiterItemProperties;
 import me.fmeng.limiter.infrastructure.limiter.RedisLimiter;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Redis实现限流器的工厂
@@ -19,7 +20,7 @@ public class RedisLimiterFactory extends BaseCachedLimiterFactory {
 
     private RedissonClient redissonClient;
 
-    public RedisLimiterFactory(RedissonClient redissonClient) {
+    public RedisLimiterFactory(@Autowired RedissonClient redissonClient) {
         this.redissonClient = redissonClient;
     }
 

@@ -5,6 +5,7 @@ import me.fmeng.limiter.Hitter;
 import me.fmeng.limiter.constant.LimiterConstant;
 import me.fmeng.limiter.constant.LimiterStrategyTypeEnum;
 import me.fmeng.limiter.infrastructure.factory.BaseCachedLimiterFactory;
+import me.fmeng.limiter.infrastructure.hitter.HitterAutoDelegate;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import javax.validation.Valid;
@@ -86,7 +87,7 @@ public class LimiterItemProperties {
     /**
      * 命中器的class
      */
-    private Class<? extends Hitter> customHitterClass;
+    private Class<? extends Hitter> customHitterClass = HitterAutoDelegate.class;
 
     /**
      * 启用本地缓存Limiter

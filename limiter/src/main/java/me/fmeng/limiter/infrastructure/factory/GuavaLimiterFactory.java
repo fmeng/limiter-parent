@@ -1,11 +1,14 @@
 package me.fmeng.limiter.infrastructure.factory;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import me.fmeng.limiter.Limiter;
 import me.fmeng.limiter.configure.bean.LimiterItemProperties;
 import me.fmeng.limiter.infrastructure.limiter.GuavaLimiter;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.Map;
 
 /**
  * Guava实现限流器的工厂
@@ -15,6 +18,11 @@ import org.apache.commons.lang3.StringUtils;
  */
 @Slf4j
 public class GuavaLimiterFactory extends BaseCachedLimiterFactory {
+
+    /**
+     * 根据hitKey缓存限流器<hitKey, 实现的限流器>
+     */
+    private final Map<String, Limiter> guavaLimiterCacheMap = Maps.newConcurrentMap();
 
     /**
      * 创建或者共缓存中查找限流器
@@ -29,6 +37,6 @@ public class GuavaLimiterFactory extends BaseCachedLimiterFactory {
         Preconditions.checkArgument(StringUtils.isNotBlank(hitKey), "hitKey不能为空");
         Preconditions.checkArgument(GuavaLimiterFactory.class.equals(item.getLimiterFactoryClass()), "item匹配异常限流器工厂");
         Preconditions.checkArgument(Boolean.TRUE.equals(item.getEnable()), "Redis限流器没有启用");
-        return new GuavaLimiter(item);
+        return guavaLimiterCacheMap.computeIfAbsent(hitKey, h -> new GuavaLimiter(hitKey, item));
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Collections;
 
 /**
  * 通过拦截器的形式, 获取数据, 限流
@@ -32,15 +33,12 @@ public class LimiterInterceptor extends LimiterDriveSupport implements HandlerIn
         ResourceBO resourceBO = new ResourceBO();
         resourceBO.setRequestUrl(request.getRequestURI());
         resourceBO.setRequestMethod(RequestMethod.valueOf(request.getMethod()));
-        resourceBO.setParameterMap(request.getParameterMap());
+        resourceBO.setParameterMap(request.getParameterMap() == null ? Collections.emptyMap() : request.getParameterMap());
         // 填充额外的资源信息
         resourceBO = fillResourceBO(resourceBO);
         ResourceBoHolder.set(resourceBO);
         /****************************** 限流逻辑 ******************************/
-        long passMilliseconds = tryToPassAllLimiter(resourceBO);
-        if (log.isDebugEnabled()) {
-            log.debug("限流器MVC拦截器, 限流后的执行时间, passMilliseconds={}, resourceBO={}", passMilliseconds, resourceBO);
-        }
+        tryToPassAllLimiter(resourceBO);
         return true;
     }
 
