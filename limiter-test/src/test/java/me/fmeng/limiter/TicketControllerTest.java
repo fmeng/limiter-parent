@@ -1,11 +1,11 @@
 package me.fmeng.limiter;
 
+import me.fmeng.limiter.exception.RequestParamException;
 import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static java.lang.System.out;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -38,13 +38,13 @@ public class TicketControllerTest extends AbstractTest {
                     .perform(requestBuilder)
                     .andExpect(result -> {
                         String contentAsString = result.getResponse().getContentAsString();
-                        out.println("url:" + url + ",result:" + contentAsString);
+                        //out.println("url:" + url + ",result:" + contentAsString);
                         if (!contentAsString.contains("正常请求")) {
                             throw new RuntimeException();
                         }
                     });
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RequestParamException(e, "请求被限制");
         }
     }
 }

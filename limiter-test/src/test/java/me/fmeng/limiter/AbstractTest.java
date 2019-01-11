@@ -3,6 +3,7 @@ package me.fmeng.limiter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
+import me.fmeng.limiter.exception.LimiterExceptionSupport;
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ public abstract class AbstractTest {
     /**
      * 并发数
      */
-    private static final int REQUEST_MAX_TIMES = 10;
+    private static final int REQUEST_MAX_TIMES = 3;
 
     /**
      * 主线程等待时间
@@ -56,7 +57,10 @@ public abstract class AbstractTest {
                         runnable.run();
                         execTimeSet.add(System.currentTimeMillis());
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        if (!(e instanceof LimiterExceptionSupport)
+                                && !(e.getCause() instanceof LimiterExceptionSupport)) {
+                            e.printStackTrace();
+                        }
                     }
                     try {
                         Thread.sleep(30);
@@ -70,7 +74,7 @@ public abstract class AbstractTest {
         try {
             Thread.sleep(MAIN_THREAD_WAIT_MS);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
         }
         printResult(execTimeSet, bizDescription);
     }

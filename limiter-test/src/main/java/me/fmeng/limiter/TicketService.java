@@ -21,7 +21,6 @@ public class TicketService {
 
     @Limiter("redis-10")
     public Object redisList() {
-        log.info("测试时间{}", System.currentTimeMillis());
         return ImmutableMap.of("currentTimeMillis", System.currentTimeMillis());
     }
 }
