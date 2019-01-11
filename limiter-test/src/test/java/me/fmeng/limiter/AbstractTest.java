@@ -39,7 +39,7 @@ public abstract class AbstractTest {
     /**
      * 主线程等待时间
      */
-    private static final int MAIN_THREAD_WAIT_MS = 10 * 1000;
+    private static final int MAIN_THREAD_WAIT_MS = 3 * 1000;
 
     /**
      * 并行调用模版方法
