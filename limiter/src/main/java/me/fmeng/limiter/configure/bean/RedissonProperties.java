@@ -1,12 +1,11 @@
 package me.fmeng.limiter.configure.bean;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import me.fmeng.limiter.constant.LimiterConstant;
 import org.redisson.client.codec.Codec;
 import org.redisson.codec.JsonJacksonCodec;
 import org.redisson.config.TransportMode;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
@@ -21,7 +20,6 @@ import javax.validation.constraints.NotNull;
  * @since 2018/07/31
  */
 @Data
-@ConfigurationProperties(prefix = LimiterConstant.LIMITER_KEY_PREFIX + ".redisson")
 public class RedissonProperties {
 
     /**
@@ -31,6 +29,7 @@ public class RedissonProperties {
      */
     @NotNull
     @Valid
+    @NestedConfigurationProperty
     private SingleServerConfigProperties singleServerConfig;
 
     /**
@@ -67,17 +66,10 @@ public class RedissonProperties {
      * 默认值: org.redisson.codec.JsonJacksonCodec
      * Redisson的对象编码类是用于将对象进行序列化和反序列化，以实现对该对象在Redis里的读取和存储。Redisson提供了以下几种的对象编码应用，以供大家选择
      */
-    @NotEmpty
+    @NotNull
     private Class<? extends Codec> codec = JsonJacksonCodec.class;
 
-    /**
-     * 编码器实例
-     */
-    @JsonIgnore
-    private Codec codecInstance;
-
     @Data
-    @ConfigurationProperties(prefix = LimiterConstant.LIMITER_KEY_PREFIX + ".redisson" + ".singleServerConfig")
     public static class SingleServerConfigProperties {
 
         /**

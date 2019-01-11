@@ -3,12 +3,18 @@ package me.fmeng.limiter.configure.bean;
 import com.google.common.base.Preconditions;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import me.fmeng.limiter.constant.LimiterConstant;
 import me.fmeng.limiter.constant.LimiterStrategyTypeEnum;
 import me.fmeng.limiter.util.JsonUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.client.codec.Codec;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
+import org.springframework.stereotype.Component;
+import org.springframework.validation.annotation.Validated;
 
+import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -24,6 +30,7 @@ import java.util.Objects;
  */
 @Data
 @Slf4j
+@Validated
 public class LimiterProperties {
 
     /**
@@ -54,7 +61,7 @@ public class LimiterProperties {
      * 该节点使用redisson的配置
      */
     @Valid
-    @NotNull
+    @NestedConfigurationProperty
     private RedissonProperties redisson;
 
     /**
@@ -64,6 +71,7 @@ public class LimiterProperties {
     @NotEmpty
     private List<LimiterItemProperties> items;
 
+    @PostConstruct
     public void init() throws Exception {
         checkArgument();
         initCodecInstance();
@@ -71,9 +79,11 @@ public class LimiterProperties {
     }
 
     private void initCodecInstance() {
-        Class<? extends Codec> codec = redisson.getCodec();
-        Preconditions.checkNotNull(codec, "codec不能为空");
-        this.redisson.setCodec(codec);
+        if (this.redisson != null) {
+            Class<? extends Codec> codec = this.redisson.getCodec();
+            Preconditions.checkNotNull(codec, "codec不能为空");
+            this.redisson.setCodec(codec);
+        }
     }
 
     private void checkArgument() {

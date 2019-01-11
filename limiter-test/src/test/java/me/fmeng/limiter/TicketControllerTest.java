@@ -19,7 +19,7 @@ public class TicketControllerTest extends AbstractTest {
 
     @Test
     public void guavaInterceptorTest() {
-        parallelLookInvoke(() -> doRequest("/ticket/guavaList?userId=user333"), "Guava拦截器");
+        parallelLookInvoke(() -> doRequest("/ticket/guavaList?userId=user111"), "Guava拦截器");
     }
 
     @Test

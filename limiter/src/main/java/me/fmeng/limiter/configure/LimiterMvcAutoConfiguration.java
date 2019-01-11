@@ -25,7 +25,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @Configuration
 @Import(LimiterAutoConfiguration.class)
 @ConditionalOnWebApplication
-@ConditionalOnProperty(prefix = LimiterConstant.LIMITER_KEY_PREFIX, name = "enable", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(prefix = LimiterConstant.LIMITER_KEY_PREFIX, name = "enable", havingValue = "true")
 public class LimiterMvcAutoConfiguration {
 
     /**

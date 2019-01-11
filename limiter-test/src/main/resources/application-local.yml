@@ -22,7 +22,7 @@ limiter:
       password: fmeng123
   items:
   - name: guava-10
-    enable: false
+    enable: true
     limiter-factory-class: me.fmeng.limiter.infrastructure.factory.GuavaLimiterFactory
     limiterStrategyType: ANNOTATION
     permits: 10
@@ -32,10 +32,10 @@ limiter:
     customHitterClass: me.fmeng.limiter.infrastructure.hitter.HitterAutoDelegate
     enableLocalLimiterCache: true
   - name: guava-20
-    enable: false
-    limiter-factory-class: me.fmeng.limiter.CustomLimiterFactory
+    enable: true
+    limiter-factory-class: me.fmeng.limiter.infrastructure.factory.GuavaLimiterFactory
     limiterStrategyType: URL
-    permits: 0
+    permits: 10
     rateInterval: 1
     timeUnit: SECONDS
     exceptionMessage: "guava-20被限流"
@@ -44,7 +44,6 @@ limiter:
     resource:
       requestMethods: [GET, POST]
       pathRegex: ".*/ticket/guavaList.*"
-      reverse: true
       params:
       - paramName: "userId"
         dynamic: false
@@ -60,10 +59,10 @@ limiter:
     customHitterClass: me.fmeng.limiter.infrastructure.hitter.HitterAutoDelegate
     enableLocalLimiterCache: true
   - name: redis-20
-    enable: false
+    enable: true
     limiter-factory-class: me.fmeng.limiter.infrastructure.factory.RedisLimiterFactory
     limiterStrategyType: URL
-    permits: 0
+    permits: 10
     rateInterval: 1
     timeUnit: SECONDS
     exceptionMessage: "redis-20被限流"
@@ -71,9 +70,7 @@ limiter:
     enableLocalLimiterCache: false
     resource:
       requestMethods: [GET, POST]
-      pathRegex: ".*/ticket/guavaList.*"
-      reverse: true
+      pathRegex: ".*/ticket/redisList.*"
       params:
       - paramName: "userId"
-        dynamic: false
-        paramValues: ["user111", "user222"]
+        dynamic: true

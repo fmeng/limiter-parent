@@ -18,12 +18,12 @@ import org.redisson.config.Config;
 import org.redisson.config.SingleServerConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.validation.Valid;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -34,8 +34,14 @@ import java.util.Optional;
  * @since 2018/07/27
  */
 @Configuration
-@ConditionalOnProperty(prefix = LimiterConstant.LIMITER_KEY_PREFIX, name = "enable", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(prefix = LimiterConstant.LIMITER_KEY_PREFIX, name = "enable", havingValue = "true")
 public class LimiterAutoConfiguration {
+
+    @Bean
+    @ConfigurationProperties(prefix = LimiterConstant.LIMITER_KEY_PREFIX)
+    public LimiterProperties limiterProperties() {
+        return new LimiterProperties();
+    }
 
     /**
      * 初始化SpringBeanUtils
@@ -46,20 +52,13 @@ public class LimiterAutoConfiguration {
     }
 
     /**
-     * 限流器配置
-     */
-    @Valid
-    @Bean(name = "limiterProperties", initMethod = "init")
-    @ConfigurationProperties(prefix = LimiterConstant.LIMITER_KEY_PREFIX)
-    public LimiterProperties limiterProperties() {
-        return new LimiterProperties();
-    }
-
-    /**
      * redis配置
      */
     @Bean(name = "redissonClient", destroyMethod = "shutdown")
     public RedissonClient redissonClient(@Autowired @Qualifier("limiterProperties") LimiterProperties limiterProperties) {
+        if (limiterProperties.getRedisson() == null) {
+            return null;
+        }
         return Redisson.create(createRedissonConfig(limiterProperties.getRedisson()));
     }
 
@@ -82,14 +81,19 @@ public class LimiterAutoConfiguration {
     /**
      * redis限流器工厂
      */
+    @ConditionalOnBean(RedissonClient.class)
     @Bean("redisLimiterFactory")
     public LimiterFactory redisLimiterFactory(@Autowired @Qualifier("redissonClient") RedissonClient redissonClient) {
+        if (redissonClient == null) {
+            return null;
+        }
         return new RedisLimiterFactory(redissonClient);
     }
 
     /**
      * 限流器路由器
      */
+
     @Bean("limiterFactoryRouter")
     public LimiterFactory limiterFactoryRouter() {
         return new LimiterFactoryRouter();
@@ -111,7 +115,6 @@ public class LimiterAutoConfiguration {
         Optional.ofNullable(redisson.getThreads()).ifPresent(config::setThreads);
         Optional.ofNullable(redisson.getNettyThreads()).ifPresent(config::setNettyThreads);
         Optional.ofNullable(redisson.getTransportMode()).ifPresent(config::setTransportMode);
-        Optional.ofNullable(redisson.getCodecInstance()).ifPresent(config::setCodec);
 
         /****************************** 单节点配置 ******************************/
         RedissonProperties.SingleServerConfigProperties singleServerConfig = redisson.getSingleServerConfig();

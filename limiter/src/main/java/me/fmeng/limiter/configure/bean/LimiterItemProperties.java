@@ -2,11 +2,11 @@ package me.fmeng.limiter.configure.bean;
 
 import lombok.Data;
 import me.fmeng.limiter.Hitter;
-import me.fmeng.limiter.constant.LimiterConstant;
 import me.fmeng.limiter.constant.LimiterStrategyTypeEnum;
 import me.fmeng.limiter.infrastructure.factory.BaseCachedLimiterFactory;
+import me.fmeng.limiter.infrastructure.factory.GuavaLimiterFactory;
 import me.fmeng.limiter.infrastructure.hitter.HitterAutoDelegate;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -20,7 +20,6 @@ import java.util.concurrent.TimeUnit;
  * @since 2018/07/27
  */
 @Data
-@ConfigurationProperties(prefix = LimiterConstant.LIMITER_KEY_PREFIX + ".items")
 public class LimiterItemProperties {
 
     /**
@@ -43,11 +42,13 @@ public class LimiterItemProperties {
     /**
      * 限流器工厂的内部实现
      */
-    private Class<? extends BaseCachedLimiterFactory> limiterFactoryClass;
+    @NotNull
+    private Class<? extends BaseCachedLimiterFactory> limiterFactoryClass = GuavaLimiterFactory.class;
 
     /**
      * 限流器控制的策略
      */
+    @NotNull
     private LimiterStrategyTypeEnum limiterStrategyType;
 
     /**
@@ -76,6 +77,7 @@ public class LimiterItemProperties {
      * 对要限流的资源描述
      */
     @Valid
+    @NestedConfigurationProperty
     private LimiterResourceProperties resource;
 
     /**

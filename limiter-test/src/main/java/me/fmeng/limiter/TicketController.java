@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.annotation.Resource;
-
 /**
  * @author fmeng
  * @since 2019/01/09
@@ -19,18 +17,13 @@ import javax.annotation.Resource;
 @RequestMapping("/ticket")
 public class TicketController {
 
-    @Resource
-    private TicketService ticketService;
-
     @GetMapping("/guavaList")
     public Object list(String userId, String startCity, String endCity) {
-        ticketService.guavaList();
         return ImmutableMap.of("正常请求", "list正常请求");
     }
 
     @GetMapping("/redisList")
     public Object redisList(String userId, String startCity, String endCity) {
-        ticketService.redisList();
         return ImmutableMap.of("正常请求", "list正常请求");
     }
 }

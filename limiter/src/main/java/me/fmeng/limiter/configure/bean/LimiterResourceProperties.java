@@ -1,8 +1,6 @@
 package me.fmeng.limiter.configure.bean;
 
 import lombok.Data;
-import me.fmeng.limiter.constant.LimiterConstant;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.validation.constraints.NotBlank;
@@ -16,7 +14,6 @@ import java.util.List;
  * @since 2018/07/24
  */
 @Data
-@ConfigurationProperties(prefix = LimiterConstant.LIMITER_KEY_PREFIX + ".items" + ".resource")
 public class LimiterResourceProperties {
 
     /**
@@ -45,7 +42,6 @@ public class LimiterResourceProperties {
      * 请求参数
      */
     @Data
-    @ConfigurationProperties(prefix = LimiterConstant.LIMITER_KEY_PREFIX + ".items" + ".resource" + ".params")
     public static class ParamProperties {
         /**
          * true:根据请求参数动态生成

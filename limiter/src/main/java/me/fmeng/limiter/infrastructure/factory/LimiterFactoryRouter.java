@@ -6,7 +6,6 @@ import me.fmeng.limiter.Limiter;
 import me.fmeng.limiter.configure.bean.LimiterItemProperties;
 import me.fmeng.limiter.infrastructure.LimiterFactory;
 import me.fmeng.limiter.util.SpringBeanUtils;
-import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Objects;
@@ -45,12 +44,11 @@ public class LimiterFactoryRouter implements LimiterFactory {
      * @return 限流器工厂
      */
     private <T extends BaseCachedLimiterFactory> T getLimiterFactory(Class<T> limiterFactoryClass) {
+        // 从Spring容器中获取
         try {
-            // 从Spring容器中获取
             return SpringBeanUtils.getBean(limiterFactoryClass);
         } catch (Exception e) {
-            // 没有从Spring容器中获得Bean, 手动注册
-            return SpringBeanUtils.regist(StringUtils.uncapitalize(ClassUtils.getSimpleName(limiterFactoryClass)), limiterFactoryClass);
+            throw new ExceptionInInitializerError(limiterFactoryClass + " 初始化失败");
         }
     }
 }
