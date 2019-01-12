@@ -1,6 +1,6 @@
 [![Travis Build Status](https://travis-ci.com/fmeng/limiter-parent.svg?branch=master)](https://travis-ci.com/fmeng/limiter-parent)
 [![Coverage Status](https://coveralls.io/repos/github/fmeng/limiter-parent/badge.svg?branch=master)](https://coveralls.io/github/fmeng/limiter-parent?branch=master)
-[![Maven Central](https://img.shields.io/maven-central/v/me.fmeng/anstore.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:me.fmeng%20AND%20a:limiter)
+[![Maven Central](https://img.shields.io/maven-central/v/me.fmeng/limiter.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:me.fmeng%20AND%20a:limiter)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 # Introduction
